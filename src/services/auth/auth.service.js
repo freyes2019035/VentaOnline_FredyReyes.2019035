@@ -9,7 +9,7 @@ exports.createToken = (user) => {
         name: user.name,
         usuario: user.user,
         rol: user.rol,
-        cursos: user.cart,
+        cart: user.cart,
         iat: moment().unix(),
         exp: moment().day(10, 'days').unix()
     }
