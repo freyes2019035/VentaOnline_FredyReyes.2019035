@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt-nodejs')
-const jwt = require('../services/auth/auth.service');
-const userModel = require('../models/users.model')
+const jwt = require('../../services/auth/auth.service');
+const userModel = require('../../models/users.model')
 exports.login = (req, res) => {
     var params = req.body;
     userModel.findOne({userName: params.usuario}, (err, user) => {

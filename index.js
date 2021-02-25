@@ -5,7 +5,7 @@ const dbService = require("./src/services/db/db.service");
 const port = 3000;
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
-const createAdminDefault = require('./src/controllers/admin.controller')
+const createAdminDefault = require('./src/controllers/users/admin.controller')
 // Start App
 const startServer = (port) => {
     app.listen(port, () => {

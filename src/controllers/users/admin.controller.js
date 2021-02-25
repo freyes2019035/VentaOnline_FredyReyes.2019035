@@ -1,5 +1,5 @@
 'use strict';
-const userModel = require('../models/users.model');
+const userModel = require('../../models/users.model');
 const bcrypt = require('bcrypt-nodejs')
 
 exports.createDefault = async (config) => {
