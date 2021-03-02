@@ -72,37 +72,56 @@ exports.deleteCategory = async (req, res) => {
             });
         }
     })
-    productsModel.find({category: categoryId}, (err, docsFound) => {
+    productsModel.updateMany({category: categoryId}, {category: defaultCategory}, (err, docsUpdated) => {
         if(err){
             warnings.message_500(res)
-        }else if(!docsFound){
-            warnings.message_404(res, 'products')
-        }else if(docsFound && docsFound.length >= 1){
-            let recordUpdated = 0;
-            docsFound.forEach(product => {
-                recordUpdated+=1;
-                let newDefaultCategory = defaultCategory;
-                productsModel.findByIdAndUpdate(product.id, {$set: {category: newDefaultCategory}}, (err, resp) => {
-                    if(err){
-                        console.log(err)
-                    }
-                });
-            });
+        }else if(docsUpdated.n === 0){
+            warnings.message_404(res, 'products with that category')
+        }else{
             categoryModel.findByIdAndRemove(categoryId, (err, resp) => {
                 if(err){
                     warnings.message_500(res)
                 }else{
                     res.status(200).send([
-                        {status: 200},
-                        {countRecordsUpdated: ` ${recordUpdated} records Updated `},
+                        {status: 'OK, 200'},
+                        {docsUpdated},
                         {categoryDeleted: [true, resp]}
                     ])
                 }
             });
-        }else{
-            warnings.message_404(res,'category with that ID')
         }
-    })
+    });
+    // productsModel.find({category: categoryId}, (err, docsFound) => {
+    //     if(err){
+    //         warnings.message_500(res)
+    //     }else if(!docsFound){
+    //         warnings.message_404(res, 'products')
+    //     }else if(docsFound && docsFound.length >= 1){
+    //         let recordUpdated = 0;
+    //         docsFound.forEach(product => {
+    //             recordUpdated+=1;
+    //             let newDefaultCategory = defaultCategory;
+    //             productsModel.findByIdAndUpdate(product.id, {$set: {category: newDefaultCategory}}, (err, resp) => {
+    //                 if(err){
+    //                     console.log(err)
+    //                 }
+    //             });
+    //         });
+    //         categoryModel.findByIdAndRemove(categoryId, (err, resp) => {
+    //             if(err){
+    //                 warnings.message_500(res)
+    //             }else{
+    //                 res.status(200).send([
+    //                     {status: 200},
+    //                     {countRecordsUpdated: ` ${recordUpdated} records Updated `},
+    //                     {categoryDeleted: [true, resp]}
+    //                 ])
+    //             }
+    //         });
+    //     }else{
+    //         warnings.message_404(res,'category with that ID')
+    //     }
+    // })
     
 }
 exports.getCategories = (req, res) => {
