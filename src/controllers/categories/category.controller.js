@@ -1,4 +1,5 @@
 const categoryModel = require('../../models/category.model');
+const productsModel = require('../../models/products.model');
 const warnings = require('../../utils/warnings/warnings.message');
 exports.createCategory = (req, res) => { 
     const category = new categoryModel();
@@ -59,15 +60,50 @@ exports.updateCategory = (req, res) => {
 }
 exports.deleteCategory = async (req, res) => {
     const { categoryId } = req.params;
-    await categoryModel.find({nombre: 'default'}, (err, resp) => {
-        if(resp && resp >= 1){
-            defaultCurso = resp[0]._id
+    let defaultCategory = 0;
+    await categoryModel.find({name: 'default', description: 'Default Category'}, (err, resp) => {
+        console.log(err)
+        if(resp && resp.length >= 1){
+            console.log({status: 'Default Category already exists'})
+            defaultCategory = resp[0]._id
         }else{
             createDefault().then(doc => {
-                defaultCurso = doc[0]._id
+                defaultCategory = doc._id
             });
         }
     })
+    productsModel.find({category: categoryId}, (err, docsFound) => {
+        if(err){
+            warnings.message_500(res)
+        }else if(!docsFound){
+            warnings.message_404(res, 'products')
+        }else if(docsFound && docsFound.length >= 1){
+            let recordUpdated = 0;
+            docsFound.forEach(product => {
+                recordUpdated+=1;
+                let newDefaultCategory = defaultCategory;
+                productsModel.findByIdAndUpdate(product.id, {$set: {category: newDefaultCategory}}, (err, resp) => {
+                    if(err){
+                        console.log(err)
+                    }
+                });
+            });
+            categoryModel.findByIdAndRemove(categoryId, (err, resp) => {
+                if(err){
+                    warnings.message_500(res)
+                }else{
+                    res.status(200).send([
+                        {status: 200},
+                        {countRecordsUpdated: ` ${recordUpdated} records Updated `},
+                        {categoryDeleted: [true, resp]}
+                    ])
+                }
+            });
+        }else{
+            warnings.message_404(res,'products with that ID')
+        }
+    })
+    
 }
 exports.getCategories = (req, res) => {
     const user = req.user;
