@@ -100,7 +100,7 @@ exports.deleteCategory = async (req, res) => {
                 }
             });
         }else{
-            warnings.message_404(res,'products with that ID')
+            warnings.message_404(res,'category with that ID')
         }
     })
     

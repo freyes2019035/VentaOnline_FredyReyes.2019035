@@ -1,4 +1,5 @@
 const productsModel = require("../../models/products.model");
+const categoryModel = require('../../models/category.model')
 const warnings = require("../../utils/warnings/warnings.message");
 
 exports.createProduct = (req, res) => {
@@ -10,26 +11,35 @@ exports.createProduct = (req, res) => {
       product.price = price;
       product.quantity = quantity;
       product.category = category;
-      productsModel.find(
-        { name: product.name, price: product.price, quantity: product.quantity, category: product.category },
-        (err, doc) => {
-          if (err) {
-            warnings.message_404(res, "products");
-          } else if (doc && doc.length >= 1) {
-            warnings.message_alreadyExists(res, "product");
-          } else {
-            product.save((err, document) => {
+      product.quantity_sold = 0;
+      categoryModel.findById(product.category, (err, categoryFound) => {
+        if(err){
+          warnings.message_500(res)
+        }else if(!categoryFound){
+          warnings.message_404(res, 'category with that id')
+        }else{
+          productsModel.find(
+            { name: product.name, price: product.price, quantity: product.quantity, category: product.category },
+            (err, doc) => {
               if (err) {
-                warnings.message_404(res, "product");
-              } else if (!document) {
-                warnings.message_500(res);
+                warnings.message_404(res, "products");
+              } else if (doc && doc.length >= 1) {
+                warnings.message_alreadyExists(res, "product");
               } else {
-                res.status(200).send([{ status: 200 }, { product: document }]);
+                product.save((err, document) => {
+                  if (err) {
+                    warnings.message_404(res, "product");
+                  } else if (!document) {
+                    warnings.message_500(res);
+                  } else {
+                    res.status(200).send([{ status: 200 }, { product: document }]);
+                  }
+                });
               }
-            });
-          }
+            }
+          );
         }
-      );
+      })
     } else {
       warnings.message_400(res);
     }
