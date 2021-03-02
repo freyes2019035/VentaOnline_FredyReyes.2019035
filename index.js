@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const createAdminDefault = require('./src/controllers/users/admin.controller')
 const authRoutes = require('./src/routes/auth.routes')
 const productsRoutes = require('./src/routes/products.routes')
+const categoryRoutes = require('./src/routes/category.routes');
 // Start App
 const startServer = (port) => {
     app.listen(port, () => {
@@ -24,6 +25,7 @@ app.set('view engine', 'ejs');
 app.set('views', './src/utils/views');
 //Routes
 app.use('/products', productsRoutes)
+app.use('/categories', categoryRoutes)
 app.use('/login', authRoutes)
 // Start DB
 

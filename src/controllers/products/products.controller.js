@@ -3,13 +3,15 @@ const warnings = require("../../utils/warnings/warnings.message");
 
 exports.createProduct = (req, res) => {
   const product = new productsModel();
-  const { nombre, cantidad } = req.body;
+  const { name, price, quantity, category} = req.body;
   if (req.user.rol === "ROL_ADMIN") {
-    if (nombre && cantidad) {
-      product.name = nombre;
-      product.quantity = cantidad;
+    if (name && price && quantity && category) {
+      product.name = name;
+      product.price = price;
+      product.quantity = quantity;
+      product.category = category;
       productsModel.find(
-        { name: product.name, quantity: product.quantity },
+        { name: product.name, price: product.price, quantity: product.quantity, category: product.category },
         (err, doc) => {
           if (err) {
             warnings.message_404(res, "products");
@@ -78,10 +80,10 @@ exports.getProducts = (req, res) => {
         productsModel.find((err, docs) => {
             if(err){
                 warnings.message_500(res)
-            }else if(docs && docs.length >= 1){
-                res.status(200).send([{status: 200},{products: docs}])
-            }else{
+            }else if(!docs){
                 warnings.message_404(res, 'products')
+            }else{
+              res.status(200).send([{status: 200},{products: docs}])
             }
         })
     }else{
@@ -100,7 +102,7 @@ exports.getProduct = (req, res) => {
             }else{
                 res.status(200).send([{status: 200}, {product: document}])
             }
-        });
+        }).populate('category');
     }else{
         warnings.message_401(res);
     }
