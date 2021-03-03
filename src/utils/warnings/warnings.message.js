@@ -13,3 +13,6 @@ exports.message_500 = res => {
 exports.message_400 = res => {
     return res.render('error_400')
 }
+exports.message_custom = (res, data) => {
+    return res.render('customError', {data})
+}

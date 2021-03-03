@@ -9,6 +9,8 @@ const createAdminDefault = require('./src/controllers/users/admin.controller')
 const authRoutes = require('./src/routes/auth.routes')
 const productsRoutes = require('./src/routes/products.routes')
 const categoryRoutes = require('./src/routes/category.routes');
+const adminRoutes = require('./src/routes/admin.routes');
+const userRoutes = require('./src/routes/users.routes')
 // Start App
 const startServer = (port) => {
     app.listen(port, () => {
@@ -27,6 +29,8 @@ app.set('views', './src/utils/views');
 app.use('/products', productsRoutes)
 app.use('/categories', categoryRoutes)
 app.use('/login', authRoutes)
+app.use('/admin', adminRoutes)
+app.use('/user', userRoutes)
 // Start DB
 
 dbService
