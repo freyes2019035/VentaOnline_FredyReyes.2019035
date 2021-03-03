@@ -7,5 +7,6 @@ router.post('/', md_auth.ensureAuth, productsController.createProduct)
 router.delete('/:id', md_auth.ensureAuth, productsController.deleteProduct)
 router.put('/:id', md_auth.ensureAuth, productsController.updateProduct)
 router.get('/', md_auth.ensureAuth, productsController.getProducts)
-router.get('/:id', md_auth.ensureAuth, productsController.getProduct)
+router.get('/product/:id', md_auth.ensureAuth, productsController.getProduct)
+router.get('/name', md_auth.ensureAuth, productsController.searchProductByName)
 module.exports = router;

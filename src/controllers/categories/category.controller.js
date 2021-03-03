@@ -127,7 +127,7 @@ exports.deleteCategory = async (req, res) => {
 exports.getCategories = (req, res) => {
     const user = req.user;
 
-    if(user.rol === "ROL_ADMIN"){
+    if(user.rol === "ROL_ADMIN" || user.rol === "ROL_CLIENT"){
         categoryModel.find((err, documents) => {
             if(err){
                 warnings.message_500(res)
@@ -141,7 +141,23 @@ exports.getCategories = (req, res) => {
         warnings.message_401(res)
     }
 }
-
+exports.getCategoryByName = (req, res) => {
+    const user = req.user;
+    const id = req.params.categoryID
+    if(user.rol === "ROL_ADMIN" || user.rol === "ROL_CLIENT"){
+        categoryModel.findById(id, (err, docs) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(!docs){
+                warnings.message_404(res, 'category')
+            }else{
+                res.status(200).send([{status: 200}, {category: docs}])
+            }
+        });
+    }else{
+        warnings.message_401(res)
+    }
+}
 const createDefault = () => {
     const category = new categoryModel();
     category.name = 'default';

@@ -117,3 +117,19 @@ exports.getProduct = (req, res) => {
         warnings.message_401(res);
     }
 }
+exports.searchProductByName = async (req, res) => {
+  if(req.user.rol === "ROL_CLIENT"){
+    const { name } = req.body;
+    await productsModel.find({ "name": {$regex: name.toString(), $options: 'i'}}, (err, document) => {
+      if(err){
+        warnings.message_500(res)
+      }else if(document && document.length >= 1){
+          res.status(200).send([{status: 'OK, 200'}, {product: document}])
+      }else{
+        warnings.message_404(res, 'product')
+      }
+    });
+  }else{
+    warnings.message_401(res)
+  }
+}
