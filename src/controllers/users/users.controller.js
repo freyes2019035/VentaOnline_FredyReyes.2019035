@@ -1,5 +1,6 @@
 'use strict';
 const userModel = require('../../models/users.model');
+const productModel = require('../../models/products.model')
 const bcrypt = require('bcrypt-nodejs')
 const warning = require('../../utils/warnings/warnings.message')
 
@@ -97,7 +98,43 @@ exports.deleteUser = (req, res) => {
         warning.message_400(res)
     }
 }
-
+exports.addToCart = (req, res) => {
+    const { product, quantity } = req.body;
+    const user = req.user;
+    productModel.find({_id: product}, (err, productFound) => {
+        if(err){
+            warning.message_500(res)
+        }else if(productFound && productFound.length >= 1){
+            const price = productFound[0].price;
+            const subtotal = parseFloat(quantity * price).toFixed(2);
+            const productStock = productFound[0].quantity;
+            if(quantity >= productStock){
+                warning.message_custom(res, 'Hmmm... sorry we do not have so many products in stock, try Later or add less product :(')
+            }else{
+                userModel.findByIdAndUpdate(user.sub, {
+                    $push: {
+                        cart: {
+                            product: product,
+                            quantity: quantity,
+                            subTotal: subtotal
+                        }
+                    } 
+                }, {new: true}, (err, docUpdated) => {
+                    if(err){
+                        warning.message_500(res)
+                    }else if(!docUpdated){
+                        warning.message_404(res)
+                    }else{
+                        res.status(200).send(docUpdated)
+                    }
+                });
+            }
+            
+        }else{
+            warning.message_404(res, 'product')
+        }
+    })
+}
 
 const encryptPassword = (password) => {
     return new Promise((resolve, reject) => {

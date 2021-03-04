@@ -11,6 +11,7 @@ const productsRoutes = require('./src/routes/products.routes')
 const categoryRoutes = require('./src/routes/category.routes');
 const adminRoutes = require('./src/routes/admin.routes');
 const userRoutes = require('./src/routes/users.routes')
+const recipeRoutes = require('./src/routes/recipe.routes')
 // Start App
 const startServer = (port) => {
     app.listen(port, () => {
@@ -31,6 +32,7 @@ app.use('/categories', categoryRoutes)
 app.use('/login', authRoutes)
 app.use('/admin', adminRoutes)
 app.use('/user', userRoutes)
+app.use('/purchase', recipeRoutes)
 // Start DB
 
 dbService
