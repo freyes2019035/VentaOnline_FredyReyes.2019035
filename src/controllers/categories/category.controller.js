@@ -68,16 +68,22 @@ exports.deleteCategory = async (req, res) => {
             defaultCategory = resp[0]._id
         }else{
             createDefault().then(doc => {
-                defaultCategory = doc._id
+                defaultCategory = doc[0]._id
             });
         }
     })
     productsModel.updateMany({category: categoryId}, {category: defaultCategory}, (err, docsUpdated) => {
         if(err){
-            warnings.message_500(res)
-        }else if(docsUpdated.n === 0){
-            warnings.message_404(res, 'products with that category')
-        }else{
+            warnings.message_custom(res, 'Hmmmm, we can not create the default category try again please')
+        }
+        // Poner si se necesita validar si no hay productos con esa categoria
+
+
+        // }else if(docsUpdated.n === 0){
+        //     warnings.message_404(res, 'products with that category')
+        // }
+
+        else{
             categoryModel.findByIdAndRemove(categoryId, (err, resp) => {
                 if(err){
                     warnings.message_500(res)
@@ -91,38 +97,6 @@ exports.deleteCategory = async (req, res) => {
             });
         }
     });
-    // productsModel.find({category: categoryId}, (err, docsFound) => {
-    //     if(err){
-    //         warnings.message_500(res)
-    //     }else if(!docsFound){
-    //         warnings.message_404(res, 'products')
-    //     }else if(docsFound && docsFound.length >= 1){
-    //         let recordUpdated = 0;
-    //         docsFound.forEach(product => {
-    //             recordUpdated+=1;
-    //             let newDefaultCategory = defaultCategory;
-    //             productsModel.findByIdAndUpdate(product.id, {$set: {category: newDefaultCategory}}, (err, resp) => {
-    //                 if(err){
-    //                     console.log(err)
-    //                 }
-    //             });
-    //         });
-    //         categoryModel.findByIdAndRemove(categoryId, (err, resp) => {
-    //             if(err){
-    //                 warnings.message_500(res)
-    //             }else{
-    //                 res.status(200).send([
-    //                     {status: 200},
-    //                     {countRecordsUpdated: ` ${recordUpdated} records Updated `},
-    //                     {categoryDeleted: [true, resp]}
-    //                 ])
-    //             }
-    //         });
-    //     }else{
-    //         warnings.message_404(res,'category with that ID')
-    //     }
-    // })
-    
 }
 exports.getCategories = (req, res) => {
     const user = req.user;

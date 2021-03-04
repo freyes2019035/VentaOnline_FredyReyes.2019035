@@ -138,7 +138,7 @@ exports.addToCart = (req, res) => {
 }
 exports.MyPurchases = (req, res) => {
     const user = req.user;
-    recipesModel.find({user: user.sub}, (err, recipesFound) => {
+    recipesModel.find({user: user.sub}).populate('purchase.product').exec( (err, recipesFound) => {
         if(err){
             warning.message_500(res)
         }else if(!recipesFound){
