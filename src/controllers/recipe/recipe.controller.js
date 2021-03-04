@@ -55,7 +55,37 @@ exports.finishPurchase = async (req, res) => {
         warnings.message_401(res)
     }
 }
-
+exports.getAllRecipes = (req, res) => {
+    if(req.user.rol === "ROL_ADMIN"){
+        recipeModel.find({}, (err, recipesFound) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(recipesFound && recipesFound.length >= 1){
+                res.status(200).send({recipes: recipesFound})
+            }else{
+                warnings.message_404(res, 'recipes')
+            }
+        })
+    }else{
+        warnings.message_401(res)
+    }
+}
+exports.getRecipe = async (req, res) => {
+    const recipeId = req.params.id;
+    if(req.user.rol === "ROL_ADMIN"){
+        recipeModel.find({_id: recipeId}).populate('purchase.product').exec((err, recipesFound) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(recipesFound && recipesFound.length >= 1){
+                res.status(200).send(recipesFound)
+            }else{
+                warnings.message_404(res, 'recipes')
+            }
+        })
+    }else{
+        warnings.message_401(res)
+    }
+}
 const calcTotal = (cart) => {
     let total = 0;
     cart.map(obj => {

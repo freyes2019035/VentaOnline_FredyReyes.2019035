@@ -9,4 +9,6 @@ router.put('/:id', md_auth.ensureAuth, productsController.updateProduct)
 router.get('/', md_auth.ensureAuth, productsController.getProducts)
 router.get('/product/:id', md_auth.ensureAuth, productsController.getProduct)
 router.get('/name', md_auth.ensureAuth, productsController.searchProductByName)
+router.get('/moreSelled', md_auth.ensureAuth, productsController.productsMoreSelled)
+router.get('/soldOut', md_auth.ensureAuth, productsController.soldOutProduct)
 module.exports = router;

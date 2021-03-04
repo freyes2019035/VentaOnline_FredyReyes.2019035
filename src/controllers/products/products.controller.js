@@ -133,3 +133,33 @@ exports.searchProductByName = async (req, res) => {
     warnings.message_401(res)
   }
 }
+exports.productsMoreSelled = (req, res) => {
+  if(req.user.rol === "ROL_ADMIN" || req.user.rol === "ROL_CLIENT"){
+    productsModel.find({}).sort({quantity_sold: -1}).limit(-3).exec((err, moreSelled) => {
+      if(err){
+        warnings.message_500(res)
+      }else if(!moreSelled){
+        warnings.message_404(res, 'products')
+      }else{
+        res.status(200).send(moreSelled)
+      }
+    })
+  }else{
+
+  }
+}
+exports.soldOutProduct = (req, res) => {
+  if(req.user.rol === "ROL_ADMIN"){
+    productsModel.find({quantity: 0}, (err, productsFind) => {
+      if(err){
+        warnings.message_500(res)
+      }else if(!productsFind){
+        warnings.message_500(res)
+      }else{
+        res.status(200).send(productsFind)
+      }
+    });
+  }else{
+    warnings.message_401(res)
+  }
+}
