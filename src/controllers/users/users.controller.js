@@ -1,6 +1,7 @@
 'use strict';
 const userModel = require('../../models/users.model');
 const productModel = require('../../models/products.model')
+const recipesModel = require('../../models/recipe.model')
 const bcrypt = require('bcrypt-nodejs')
 const warning = require('../../utils/warnings/warnings.message')
 
@@ -108,8 +109,8 @@ exports.addToCart = (req, res) => {
             const price = productFound[0].price;
             const subtotal = parseFloat(quantity * price).toFixed(2);
             const productStock = productFound[0].quantity;
-            if(quantity >= productStock){
-                warning.message_custom(res, 'Hmmm... sorry we do not have so many products in stock, try Later or add less product :(')
+            if(quantity > productStock){
+                warning.message_custom(res, `Hmmm... sorry we only have ${productStock} in stock, try Later or add less :(`)
             }else{
                 userModel.findByIdAndUpdate(user.sub, {
                     $push: {
@@ -132,6 +133,18 @@ exports.addToCart = (req, res) => {
             
         }else{
             warning.message_404(res, 'product')
+        }
+    })
+}
+exports.MyPurchases = (req, res) => {
+    const user = req.user;
+    recipesModel.find({user: user.sub}, (err, recipesFound) => {
+        if(err){
+            warning.message_500(res)
+        }else if(!recipesFound){
+            warning.message_404(res, 'recipes')
+        }else{
+            res.status(200).send([{status: 200}, {recipes: recipesFound}])
         }
     })
 }

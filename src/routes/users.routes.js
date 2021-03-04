@@ -6,5 +6,5 @@ router.post('/createAccount', userController.createUser)
 router.put('/updateAccount/', md_auth.ensureAuth, userController.updateUser)
 router.delete('/deleteAccount/', md_auth.ensureAuth, userController.deleteUser)
 router.post('/addToCart', md_auth.ensureAuth, userController.addToCart)
-
+router.get('/myPurchases', md_auth.ensureAuth, userController.MyPurchases)
 module.exports = router;
