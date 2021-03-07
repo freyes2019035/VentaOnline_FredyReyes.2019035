@@ -6,6 +6,7 @@ const port = 3000;
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const createAdminDefault = require('./src/controllers/users/admin.controller')
+const createCategoryDefault = require('./src/controllers/categories/category.controller')
 const authRoutes = require('./src/routes/auth.routes')
 const productsRoutes = require('./src/routes/products.routes')
 const categoryRoutes = require('./src/routes/category.routes');
@@ -47,6 +48,7 @@ dbService
         userName: 'ADMIN',
         password: '123456'
       })
+      createCategoryDefault.createDefault()
     }
   })
   .catch((err) => {

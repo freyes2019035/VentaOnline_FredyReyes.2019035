@@ -59,44 +59,40 @@ exports.updateCategory = (req, res) => {
 
 }
 exports.deleteCategory = async (req, res) => {
-    const { categoryId } = req.params;
-    let defaultCategory = 0;
-    await categoryModel.find({name: 'default', description: 'Default Category'}, (err, resp) => {
-        console.log(err)
-        if(resp && resp.length >= 1){
-            console.log({status: 'Default Category already exists'})
-            defaultCategory = resp[0]._id
-        }else{
-            createDefault().then(doc => {
-                defaultCategory = doc[0]._id
-            });
-        }
-    })
-    productsModel.updateMany({category: categoryId}, {category: defaultCategory}, (err, docsUpdated) => {
-        if(err){
-            warnings.message_custom(res, 'Hmmmm, we can not create the default category try again please')
-        }
-        // Poner si se necesita validar si no hay productos con esa categoria
-
-
-        // }else if(docsUpdated.n === 0){
-        //     warnings.message_404(res, 'products with that category')
-        // }
-
-        else{
-            categoryModel.findByIdAndRemove(categoryId, (err, resp) => {
-                if(err){
-                    warnings.message_500(res)
-                }else{
-                    res.status(200).send([
-                        {status: 'OK, 200'},
-                        {docsUpdated},
-                        {categoryDeleted: [true, resp]}
-                    ])
-                }
-            });
-        }
-    });
+    const user = req.user;
+    if(user.rol === "ROL_ADMIN"){
+        const { categoryId } = req.params;
+        await categoryModel.find({name: 'default', description: 'Default Category'}, (err, resp) => {
+            if(resp && resp.length >= 1){
+                productsModel.updateMany({category: categoryId}, {category: resp[0]._id}, (err, docsUpdated) => {
+                    if(err){
+                        warnings.message_500(res)
+                    }
+                    // Poner si se necesita validar si no hay productos con esa categoria
+                    // }else if(docsUpdated.n === 0){
+                    //     warnings.message_404(res, 'products with that category')
+                    // }
+                    else{
+                        categoryModel.findByIdAndRemove(categoryId, (err, resp) => {
+                            if(err){
+                                warnings.message_500(res)
+                            }else{
+                                res.status(200).send([
+                                    {status: 'OK, 200'},
+                                    {docsUpdated},
+                                    {categoryDeleted: [true, resp]}
+                                ])
+                            }
+                        });
+                    }
+                });
+            }else{
+                warnings.message_custom('hmmmm... Sorry we cant find the default category. Please try again')
+            }
+        })
+    }else{
+        warnings.message_401(res)
+    }
 }
 exports.getCategories = (req, res) => {
     const user = req.user;
@@ -132,19 +128,25 @@ exports.getCategoryByName = (req, res) => {
         warnings.message_401(res)
     }
 }
-const createDefault = () => {
+exports.createDefault = () => {
     const category = new categoryModel();
     category.name = 'default';
     category.description = 'Default Category';
-    return new Promise((resolve, reject) => {
-        category.save((err, resp) => {
-            if(err){
-                reject(err)
-            }else if(!resp){
-                reject(err)
-            }else{
-                resolve(resp)
-            }
-        })
-    })
+    categoryModel.find({name: category.name, description: category.description}, (err, catFind) => {
+        if(err){
+            console.log('error', err)
+        }else if(catFind && catFind.length >= 1){
+            console.log({status: 'Default category already exists'})
+        }else{
+            category.save((err, resp) => {
+                if(err){
+                    console.log(err)
+                }else if(!resp){
+                    console.log(err)
+                }else{
+                    return resp
+                }
+            })
+        }
+    });
 }
