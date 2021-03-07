@@ -109,7 +109,9 @@ exports.addToCart = (req, res) => {
             const price = productFound[0].price;
             const subtotal = parseFloat(quantity * price).toFixed(2);
             const productStock = productFound[0].quantity;
-            if(quantity > productStock){
+            if(productStock === 0){
+                warning.message_custom(res, `Hmmm... sorry we dont have more ${productFound[0].name}`)
+            }else if(quantity > productStock ){
                 warning.message_custom(res, `Hmmm... sorry we only have ${productStock} in stock, try Later or add less :(`)
             }else{
                 userModel.findByIdAndUpdate(user.sub, {
