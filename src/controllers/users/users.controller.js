@@ -113,6 +113,8 @@ exports.addToCart = (req, res) => {
                 warning.message_custom(res, `Hmmm... sorry we dont have more ${productFound[0].name}`)
             }else if(quantity > productStock ){
                 warning.message_custom(res, `Hmmm... sorry we only have ${productStock} in stock, try Later or add less :(`)
+            }else if(productStock === 0){
+                warning.message_custom(res, `Hmmm... sorry we dont have more ${productFound[0].name}`)
             }else{
                 userModel.findByIdAndUpdate(user.sub, {
                     $push: {
