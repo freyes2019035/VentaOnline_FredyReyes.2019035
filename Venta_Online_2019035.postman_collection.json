@@ -933,18 +933,18 @@
 					"response": []
 				},
 				{
-					"name": "Get Recipe",
+					"name": "Get Recipe and Products of the recipe",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2MDM3ZTlmNTI5M2I1NzI5ZDgxZWJlY2EiLCJuYW1lIjoiQWRtaW4iLCJyb2wiOiJST0xfQURNSU4iLCJpYXQiOjE2MTQ4ODMzNTYsImV4cCI6MTYxNTQwMTc1Nn0.BRWGvWFehPfqdgghv0dFEh2URKi2e4nV7qmMLN9trks\"",
+								"value": "\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2MDQxNDY5NDQyNWVjYjJiZjRkYzRmYzciLCJuYW1lIjoiQWRtaW4iLCJyb2wiOiJST0xfQURNSU4iLCJpYXQiOjE2MTU1Nzk1NDMsImV4cCI6MTYxNjAxMTU0M30.-L5beUzYVjWCvMFjkdf8we0_59E-GXollcb7Z2AW6mk\"",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:3000/purchase/number/604131231689dc27720087d7",
+							"raw": "localhost:3000/purchase/number/604452996dcfc3406414d692",
 							"host": [
 								"localhost"
 							],
@@ -952,7 +952,7 @@
 							"path": [
 								"purchase",
 								"number",
-								"604131231689dc27720087d7"
+								"604452996dcfc3406414d692"
 							]
 						}
 					},
