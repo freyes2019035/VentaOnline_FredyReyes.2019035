@@ -848,6 +848,32 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Products Of a category",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2MDQxNDY5NDQyNWVjYjJiZjRkYzRmYzciLCJuYW1lIjoiQWRtaW4iLCJyb2wiOiJST0xfQURNSU4iLCJpYXQiOjE2MTU1MTIwMDksImV4cCI6MTYxNjAzMDQwOX0.13PNeV0_elKIsM6OZueTlV4cHgM26KsUXR63gAKdm40\"",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:3000/categories/products/60443ef0a7e9f43e7cd6f1c4",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"categories",
+										"products",
+										"60443ef0a7e9f43e7cd6f1c4"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				}

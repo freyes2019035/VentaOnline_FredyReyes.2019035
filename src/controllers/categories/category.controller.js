@@ -128,6 +128,24 @@ exports.getCategoryByName = (req, res) => {
         warnings.message_401(res)
     }
 }
+exports.getProductsOfCategory = async (req, res) => {
+    const categoryId = req.params.categoryId;
+    const user = req.user;
+    if(user.rol === "ROL_ADMIN" || user.rol === "ROL_CLIENT"){
+        productsModel.find({category: categoryId}, (err, productFound) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(!productFound){
+                warnings.message_custom(res, 'Jmmm, sorry we can not get all the products')
+            }else{
+                res.status(200).send([{status: 200},{products: productFound}])
+            }
+
+        });
+    }else{
+        warnings.message_401(res)
+    }
+}
 exports.createDefault = () => {
     const category = new categoryModel();
     category.name = 'default';
